@@ -1,0 +1,14 @@
+[workspace]
+authors = ["Dan Allan <>"]
+channels = ["conda-forge"]
+name = "tiled-xdi"
+platforms = ["linux-aarch64"]
+version = "0.1.0"
+
+[tasks]
+serve = { cmd = "tiled serve config config.yml", env = { TILED_SINGLE_USER_API_KEY = "secret" } }
+fetch-examples = { cmd = "python copy_example_data.py" }
+
+[dependencies]
+tiled-server = ">=0.2.11,<0.3"
+tiled-client = ">=0.2.11,<0.3"

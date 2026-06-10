@@ -1,0 +1,7 @@
+# Use a SQLite-backed catalog
+catalog:
+  uri: catalog.db
+  init_if_not_exists: true
+  writable_storage:
+    - ./data
+    - duckdb://./data.db
