@@ -1,14 +1,13 @@
 import path from "path";
-import { resolve } from "node:path";
 
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
-import dts from "vite-plugin-dts";
 import tsConfigPaths from "vite-tsconfig-paths";
-import * as packageJson from "./package.json";
-/// <reference types="vitest" />
 
-
+// App build config: produces a static SPA (index.html + assets) for hosting.
+// Unlike vite.config.ts (a library build), this bundles React and emits a
+// browser-ready app to `dist-app/`. VITE_* values are inlined at build time
+// from the active mode's env file (.env.production for `vite build`).
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -28,9 +27,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tsConfigPaths(),
-      dts({
-        include: ['src/', 'src/vite-env.d.ts'],
-      }),
     ],
     resolve: {
       alias: {
@@ -71,20 +67,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      lib: {
-        entry: resolve('src', 'index.ts'),
-        name: 'Finch',
-        formats: ['es', 'umd'],
-        fileName: (format) => `finch.${format}.js`,
-      },
-      rollupOptions: {
-        external: [...Object.keys(packageJson.peerDependencies)],
-      },
-    },
-    test: {
-      environment: 'jsdom',
-      setupFiles: ['./src/testing/setup.ts'],
-      globals: true,
+      outDir: 'dist-app',
+      emptyOutDir: true,
     },
   };
 });

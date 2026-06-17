@@ -1,7 +1,8 @@
 import TiledLinePlotMaker from '@/features/TiledLinePlotMaker';
-export default function TestPage() {
-
+import { useTiledApiUrls } from '@/utils/apiUtils';
+export default function TiledPlotMakerPage() {
+    const { httpBaseUrl } = useTiledApiUrls();
     return (
-        <TiledLinePlotMaker />
+        <TiledLinePlotMaker tiledBaseUrl={httpBaseUrl} />
     );
 }

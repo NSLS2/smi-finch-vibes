@@ -4,3 +4,6 @@
 catalog.db
 data/*
 data.db
+.node_modules/*
+.env.*
+.env

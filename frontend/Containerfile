@@ -1,0 +1,76 @@
+# syntax=docker/dockerfile:1
+
+# Base stage: create a non-root user, install dependencies, copy the source.
+FROM node:22-bookworm-slim AS base
+
+# Build args for a non-root user to run the service
+ARG username=finch
+ARG uid=899
+ARG gid=
+
+# These ENV vars are only used at build time to create the user
+ENV USER="$username"
+ENV UID="$uid"
+ENV GID="$gid"
+
+# Create a non-root user to run the service. Chain with && so the whole
+# RUN step succeeds or fails as a single unit.
+RUN set -eux \
+    && groupadd -g "${GID:-$UID}" -r "$USER" \
+    && useradd -d "/srv/$USER" -u "$UID" -g "${GID:-$UID}" -r -m "$USER"
+
+
+# Switch to the non-root user BEFORE copying/installing so that node_modules
+# (and Vite's node_modules/.vite cache written at runtime) are owned by the
+# runtime user, avoiding permission errors.
+USER "$USER"
+WORKDIR "/srv/$USER"
+
+# Install dependencies first to leverage layer caching.
+COPY --chown="$UID:${GID:-$UID}" package.json package-lock.json ./
+RUN npm ci
+
+# Copy the rest of the frontend project.
+COPY --chown="$UID:${GID:-$UID}" . .
+
+# Dev stage: run the Vite dev server as the non-root user (local development,
+# proxying). VITE_* values come from .env.development at dev-server start.
+FROM base AS dev
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+# Build stage: produce the static production bundle. VITE_* values are inlined
+# from .env.production at build time into dist-app/.
+FROM base AS build
+
+ARG VITE_TILED_API_URL=
+
+ENV VITE_TILED_API_URL="$VITE_TILED_API_URL"
+
+RUN npm run build:app
+
+# Prod stage: serve the static bundle with `serve`. The `-s` flag enables SPA
+# fallback (serves index.html for unmatched routes, needed for BrowserRouter).
+FROM node:22-bookworm-slim AS prod
+
+ARG username=finch
+ARG uid=899
+ARG gid=
+ENV USER="$username"
+ENV UID="$uid"
+ENV GID="$gid"
+
+# Create the same non-root user and install the static file server.
+RUN set -eux \
+    && groupadd -g "${GID:-$UID}" -r "$USER" \
+    && useradd -d "/srv/$USER" -u "$UID" -g "${GID:-$UID}" -r -m "$USER" \
+    && npm install -g serve@14
+
+USER "$USER"
+WORKDIR "/srv/$USER"
+
+# Copy only the built static assets from the build stage.
+COPY --from=build --chown="$UID:${GID:-$UID}" "/srv/$USER/dist-app" ./dist-app
+
+EXPOSE 3000
+CMD ["serve", "-s", "dist-app", "-l", "3000"]

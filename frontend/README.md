@@ -86,7 +86,7 @@ Prefer to use env variables?
 ```javascript
         <FinchConfigProvider config={{
           tiledApiUrl: import.meta.env.VITE_TILED_API_URL,
-          tiledApiKey: import.meta.env.VITE_TILED_API_KEY,
+          tiledApiKey: import.meta.env.VITE_API_TILED_API_KEY,
           ophydApiUrl: import.meta.env.VITE_OPHYD_API_URL,
           qServerApiUrl: import.meta.env.VITE_QSERVER_API_URL,
           qServerApiKey: import.meta.env.VITE_QSERVER_API_KEY,
@@ -100,7 +100,7 @@ VITE_OPHYD_API_URL=http://localhost:8001/api/v1
 VITE_QSERVER_API_URL=http://localhost:60610/api
 
 VITE_QSERVER_API_KEY=test
-VITE_TILED_API_KEY=a-really-long-key
+VITE_API_TILED_API_KEY=a-really-long-key
 ```
 
 ## App.tsx — Using HubAppLayout with Pages

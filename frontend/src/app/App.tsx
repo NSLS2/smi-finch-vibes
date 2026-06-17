@@ -49,7 +49,7 @@ function App() {
         <FinchConfigProvider
             config={{
                 tiledApiUrl: import.meta.env.VITE_TILED_API_URL,
-                tiledApiKey: 'secret',
+                tiledApiKey: import.meta.env.VITE_API_TILED_API_KEY,
                 ophydApiUrl: import.meta.env.VITE_OPHYD_API_URL,
                 qServerApiUrl: import.meta.env.VITE_QSERVER_API_URL,
                 qServerApiKey: import.meta.env.VITE_QSERVER_API_KEY,

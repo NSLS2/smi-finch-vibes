@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:app": "tsc && vite build --config vite.app.config.ts",
+    "preview:app": "vite preview --config vite.app.config.ts",
     "lint": "eslint src .storybook",
     "lint:fix": "eslint src .storybook --fix",
     "format": "prettier --check \"src/**/*.{ts,tsx}\"",
