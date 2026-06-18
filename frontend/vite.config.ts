@@ -1,5 +1,6 @@
 import path from "path";
 import { resolve } from "node:path";
+import fs from "node:fs";
 
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
@@ -18,6 +19,11 @@ export default defineConfig(({ mode }) => {
   const cameraWs = env.VITE_CAMERA_WS?.trim() || 'ws://localhost:8001/api/v1/camera-socket';
   const tiffWs = env.VITE_TIFF_WS?.trim() || 'ws://localhost:8002/tiff-socket';
   const tiledTarget = env.VITE_TILED_TARGET?.trim() || 'https://tiled.nsls2.bnl.gov';
+
+  const httpsConfig = env.VITE_HTTPS_CERT && env.VITE_HTTPS_KEY ? {
+    cert: fs.readFileSync(env.VITE_HTTPS_CERT.trim()),
+    key: fs.readFileSync(env.VITE_HTTPS_KEY.trim()),
+  } : {};
 
   return {
     define: {
@@ -38,6 +44,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      https: httpsConfig,
       proxy: {
         '/api/qserver': {
           target: qserverRest,
