@@ -73,9 +73,9 @@ COPY --from=build --chown="$UID:${GID:-$UID}" "/srv/$USER/dist-app" ./dist-app
 
 # Replace these build args with actual paths to the cert and key files
 ARG certfile=/certs/cert.pem
-ENV VITE_HTTPS_CERT="$certfile"
 ARG keyfile=/certs/key.pem
+
+ENV VITE_HTTPS_CERT="$certfile"
 ENV VITE_HTTPS_KEY="$keyfile"
 
-EXPOSE 3000
-CMD ["serve", "-s", "dist-app", "-l", "3000"]
+CMD ["serve", "-s", "dist-app", "-l", "8443"]
