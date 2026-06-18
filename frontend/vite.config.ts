@@ -1,7 +1,7 @@
 import path from "path";
 import { resolve } from "node:path";
+import fs from "node:fs";
 
-import fs from 'fs';
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import dts from "vite-plugin-dts";
