@@ -78,4 +78,5 @@ ARG keyfile=/certs/key.pem
 ENV VITE_HTTPS_CERT="$certfile"
 ENV VITE_HTTPS_KEY="$keyfile"
 
+EXPOSE 8443
 CMD ["serve", "-s", "dist-app", "-l", "8443"]
