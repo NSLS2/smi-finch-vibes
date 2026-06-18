@@ -1,5 +1,6 @@
 import path from "path";
 
+import fs from 'fs';
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -18,6 +19,11 @@ export default defineConfig(({ mode }) => {
   const tiffWs = env.VITE_TIFF_WS?.trim() || 'ws://localhost:8002/tiff-socket';
   const tiledTarget = env.VITE_TILED_TARGET?.trim() || 'https://tiled.nsls2.bnl.gov';
 
+  const httpsConfig = env.VITE_HTTPS_CERT && env.VITE_HTTPS_KEY ? {
+    cert: fs.readFileSync(env.VITE_HTTPS_CERT.trim()),
+    key: fs.readFileSync(env.VITE_HTTPS_KEY.trim()),
+  } : {};
+
   return {
     define: {
       'import.meta.env.VITE_QSERVER_REST': JSON.stringify(qserverRest),
@@ -34,6 +40,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      https: httpsConfig,
       proxy: {
         '/api/qserver': {
           target: qserverRest,
