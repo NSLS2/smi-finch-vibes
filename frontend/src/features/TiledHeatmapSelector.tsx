@@ -17,6 +17,8 @@ export default function TiledHeatmapSelector({ tiledBaseUrl }: TiledHeatmapSelec
                 onSelectCallback={(links) => setSelectedUrl(links.self)}
                 size="medium"
                 pageLimit={30}
+                reverseSort={false}
+                initialPath="smi/migration"
             />
             <PlotlyHeatmapTiled url={selectedUrl || ''} />
         </section>

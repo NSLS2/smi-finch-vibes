@@ -66,9 +66,9 @@ export default function TiledLinePlotMaker({
         const fetchData = async () => {
             //eventually uncomment this and get the key contains working once that's updated in tiled api
             const searchConfig: TiledSearchConfig = {
-                options: {
-                    sort: '-',
-                },
+                // options: {
+                //     sort: '-',
+                // },
                 filters: {
                     specs: { include: ['BlueskyRun'], exclude: [] },
                 },
